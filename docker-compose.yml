@@ -1,11 +1,11 @@
-version: "3.8"
+version: '3.8'
 
-service:
-tux-locker:
-  image: nginx:alpine
-  ports:
-  - "8080:80"
-  volumes:
-  - ./index.html:/usr/share/nginx/html/index.html:ro
-  container_name: tux-locker
-  restart: unless-stopped
+services:
+  tux-locker:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./index.html:/usr/share/nginx/html/index.html:ro
+    container_name: tux-locker
+    restart: unless-stopped
