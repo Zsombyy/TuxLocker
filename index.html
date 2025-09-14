@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tux Locker - Find your perfect Linux Distro</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --bg-gradient-start: #1e0033;
+                --bg-gradient-mid-1: #3d1d5c;
+                --bg-gradient-mid-2: #0d2145;
+                --bg-gradient-end: #001d2e;
+                --text-primary: #ffffff;
+                --text-secondary: #d8b4fe;
+                --text-tertiary: #c4b5fd;
+                --panel-bg: rgba(20, 15, 40, 0.4);
+                --panel-border: rgba(255, 255, 255, 0.1);
+                --neon-glow-1: #a855f7;
+                --neon-glow-2: #6d28d9;
+                --progress-bar-bg: #4338ca;
+                --card-border-hover: rgba(168, 85, 247, 0.7);
+                --card-border-selected: #a855f7;
+                --pro-bg: rgba(22, 163, 74, 0.15);
+                --pro-text: #86efac;
+                --con-bg: rgba(220, 38, 38, 0.15);
+                --con-text: #fca5a5;
+            }
+            body {
+                font-family: 'Inter', sans-serif;
+                background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-mid-1), var(--bg-gradient-mid-2), var(--bg-gradient-end));
+                background-size: 400% 400%;
+                animation: gradientBG 15s ease infinite;
+                overflow-x: hidden;
+                color: var(--text-primary);
+                transition: color 0.5s ease, background 0.5s ease;
+            }
+            @keyframes gradientBG {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%;}
+            }
+            .glass-panel {
+                background: var(--panel-bg);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid var(--panel-border);
+                will-change: transform, opacity;
+                transition: background 0.5s ease, border 0.5s ease;
+            }
+            .neon-text {
+                color: var(--text-primary);
+                text-shadow: 0 0 5px var(--neon-glow-1), 0 0 10px var(--neon-glow-1), 0 0 20px var(--neon-glow-2);
+            }
+            .gradient-button {
+                background-image: linear-gradient(to right, #8b5cf6, #6366f1);
+                transition: all 0.3s ease;
+            }
+            .gradient-button:hover, .gradient-button:focus-visible {
+                box-shadow: 0 0 15px #8b5cf6, 0 0 25px #6366f1;
+                transform: translateY(-2px);
+            }
+            .choice-card {
+                transition: all 0.2s ease-in-out;
+                will-change: transform, box-shadow;
+            }
+            .choice-card:hover, .choice-card:focus-visible {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+                border-color: var(--card-border-hover);
+                outline: none;
+            }
+            .choice-card.selected {
+                border-color: var(--card-border-selected);
+                box-shadow: 0 0 15px var(--card-border-selected);
+                transform: translateY(-5px);
+            }
+            .progress-bar-inner {
+                background-color: var(--neon-glow-1);
+                transition: width 0.5s ease-out;
+            }
+            .typing-cursor {
+                display: inline-block;
+                width: 3px;
+                background-color: #c4b6fd;
+                animation: blink 0.7s infinite;
+            }
+            @keyframes blink { 50% { opacity: 0;} }
+            @keyframes fadeIn  { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+            .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        </style>
+   </head>
+<body class="antialiased flex items-center justify-center min-h-screen p-4">
+
+    <main id="app-container" class="w-full max-w-3xl mx-auto">
+        <section id="start-screen" class="text-center fade-in">
+            <h1 class="text-6xl md:text-8xl font-black neon-text mb-4">Tux Locker</h1>
+            <p id="tagline" class="text-xl md:text-2xl mb-8 h-8" style="color: var(--text-secondary);"></p>
+            <button id="start-quiz-btn" class="gradient-button text-white font-bold py-3 px-8 rounded-full text-lg">
+                Find My Distro! 🐧
+            </button>
+        </section>
+
+        <section id="quiz-screen" class="hidden">
+            <div class="w-full bg-gray-700/50 rounded-full h-2.5 mb-6 glass-panel border-none">
+                <div id="progress-bar" class="h-2.5 rounded-full progress-bar-inner" style="width: 0%"></div>
+            </div>
+
+            <div id="quiz-content" class="glass-panel rounded-2xl p-6 md:p-10">
+                <h2 id="question-title" class="text-2xl md:text-3xl font-bold mb-2"></h2>
+                <p id="question-subtitle" class="mb-8" style="color: var(--text-tertiary);"></p>
+                <div id="answer-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+        </section>
+
+        <section id="results-screen" class="hidden glass-panel rounded-2xl p-6 md:p-10">
+            <div class="text-center">
+                <p class="text-lg" style="color: var(--text-tertiary);">Your perfect match is...</p>
+                <h2 id="distro-name" class="text-5xl md:text-6xl font-black my-3 neon-text"></h2>
+                <p id="distro-tagline" class="text-xl mb-6" style="color: var(--text-secondary);"></p>
+            </div>
+
+            <div class="p-6 rounded-lg mb-6" style="background-color: var(--panel-bg);">
+                <h3 class="font-bold text-lg mb-2">What is it?</h3>
+                <p id="distro-description" style="color: var(--text-secondary);"></p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="p-4 rounded-lg" style="background-color: var(--pro-bg)">
+                    <h3 class="font-bold text-lg mb-2" style="color: var(--pro-text);">Pros</h3>
+                    <ul id="distro-pros" class="list-disc list-inside space-y-1" style="color: var(--pro-text);"></ul>
+                </div>
+                <div class="p-4 rounded-lg" style="background-color: var(--con-bg);">
+                    <h3 class="font-bold text-lg mb-2" style="color: var(--con-text);">Cons</h3>
+                    <ul id="distro-cons" class="list-disc list-inside space-y-1" style="color: var(--con-text);"></ul>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button id="restart-quiz-btn" class="gradient-button text-white font-bold py-3 px-8 rounded-full text-lg">
+                    Take the Quiz Again
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 w-full text-center p-4 text-xs text-white/50 z-10">
+      Copyright 2024-2025 Cubxy Development  Under GNU V3 License and free to contribute
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const startScreen = document.getElementById('start-screen');
+            const quizScreen = document.getElementById('quiz-screen');
+            const resultsScreen = document.getElementById('results-screen');
+            const startBtn = document.getElementById('start-quiz-btn');
+            const restartBtn = document.getElementById('restart-quiz-btn');
+            const progressBar = document.getElementById('progress-bar');
+            const questionTitle = document.getElementById('question-title');
+            const questionSubtitle = document.getElementById('question-subtitle');
+            const answerGrid = document.getElementById('answer-grid');
+            const taglineEl = document.getElementById('tagline');
+            const quizContent = document.getElementById('quiz-content');
+
+            const quizData = [ { question: "How much Linux experience do you have?", subtitle: "Be honest, we don't judge.", key: 'experience', answers: [ { text: "Beginner", icon: "🥀", value: "beginner", description: "I've only heard of it or just starting out." }, { text: "Intermediate", icon: "🤓", value: "intermediate", description: "I know my way around a terminal." }, { text: "Advanced", icon: "🎭", value: "advanced", description: "I compile my own kernel for fun." }, { text: "Agnostic", icon: "😪", value: "any", description: "Just give me something that works!" } ] }, { question: "What's your main mission?", subtitle: "What will you be doing most of the time?", key: 'useCase', answers: [ { text: "Daily driving", icon: "🚙", value: "daily", description: "Web browsing, media." }, { text: "Gaming", icon: "🕹", value: "gaming", description: "Maximum frames and compatibility." }, { text: "Development", icon: "💾", value: "development", description: "Coding, containers, and creativity." }, { text: "Server", icon: "💻", value: "server", description: "Running services with stability." } ] }, { question: "Pick your desktop's vibe.", subtitle: "How do you want it to look and feel?", key: 'desktop', answers: [ { text: "Windows-like", icon: "🐌", value: "windows", description: "A familiar taskbar and start menu." }, { text: "macOS-like", icon: "💸", value: "macos", description: "Sleek, with a dock and top bar." }, { text: "Minimalist", icon: "👻", value: "minimal", description: "Clean, simple, and out of the way." }, { text: "Customizable", icon: "🪄", value: "custom", description: "I want to tweak every single pixel." } ] }, { question: "Software philosophy?", subtitle: "Are you a purist or pragmatist?", key: 'philosophy', answers: [ { text: "Open Source purist", icon: "🫡", value: "foss", description: "Only free and open-source software." }, { text: "Pragmatic", icon: "🛠", value: "pragmatic", description: "I'll use proprietary drivers/apps if I need to." } ] }, { question: "How do you like your updates?", subtitle: "Bleeding edge or slow and steady?", key: 'updates', answers: [ { text: "Rolling release", icon: "🎡", value: "rolling", description: "Give me the latest updates, always." }, { text: "Stable release", icon: "🏫", value: "stable", description: "I prefer major updates once or twice a year." } ] }, { question: "What's your hardware situation?", subtitle: "Is your machine a beast or a veteran?", key: 'hardware', answers: [ { text: "High-end Beast", icon: "💪", value: "high", description: "A modern, powerful computer." }, { text: "Mid-range Workhorse", icon: "🛰", value: "mid", description: "Decent specs, a few years old." }, { text: "Low-end Veteran", icon: "🦴", value: "low", description: "An older machine that needs some love." } ] } ];
+            const distros = { 'mint': { name: "Linux Mint", tagline: "The comfort food of Linux - it just works.", description: "Mint is famous for being incredibly easy to install and use. It's designed to be a comfortable and familiar experience for people coming from Windows, with everything you need included right out of the box.", pros: ["Extremely beginner-friendly", "Familiar Cinnamon desktop", "Great community support", "Very stable and reliable"], cons: ["Based on older Ubuntu LTS, so software can be dated", "Not the most exciting or cutting-edge"], scores: { experience: 'beginner', useCase: 'daily', desktop: 'windows', philosophy: 'pragmatic', updates: 'stable', hardware: 'mid' } }, 'ubuntu': { name: "Ubuntu", tagline: "Everyone's first Linux crush.", description: "Ubuntu is arguably the most popular desktop Linux distribution. It has a massive company behind it (Canonical), huge community support, and aims to be a great general-purpose OS for everyone.", pros: ["Huge software library", "Massive community and corporate support", "Simple installation", "Good hardware compatibility"], cons: ["Some controversial decisions (like Snap packages)", "Default GNOME desktop isn't for everyone"], scores: { experience: 'beginner', useCase: 'daily', desktop: 'macos', philosophy: 'pragmatic', updates: 'stable', hardware: 'mid' } }, 'popos': { name: "Pop!_OS", tagline: "The polished powerhouse for work and play.", description: "Made by computer manufacturer System76, Pop!_OS is a refined version of Ubuntu. It features a slick, productive desktop, built-in GPU support, and thoughtful tweaks for gamers and developers.", pros: ["Excellent out-of-box NVIDIA/AMD support", "Clean, efficient user interface", "Great for gaming and STEM", "No controversial Snap packages"], cons: ["Tied to Ubuntu's release cycle", "Fewer desktop environment choices"], scores: { experience: 'beginner', useCase: 'gaming', desktop: 'macos', philosophy: 'pragmatic', updates: 'stable', hardware: 'high' } }, 'fedora': { name: "Fedora Workstation", tagline: "The developer's cutting-edge playground.", description: "Fedora is a community-driven project sponsored by Red Hat. It's known for being innovative and adopting new technologies early, making it a favorite for developers who want the latest software in a stable, polished package.", pros: ["Very up-to-date software", "Pure GNOME experience", "Strong focus on open source", "Excellent for developers"], cons: ["Shorter release cycle (6 months) requires frequent upgrades", "Might need extra steps for proprietary drivers/codecs"], scores: { experience: 'intermediate', useCase: 'development', desktop: 'macos', updates: 'stable', philosophy: 'foss', hardware: 'high' } }, 'arch': { name: "Arch Linux", tagline: "Warning: you may become insufferable and tell everyone.", description: "Arch is a minimalist, do-it-yourself distribution. You start with a bare-bones system and build it up exactly how you want. It's famous for its rolling-release and the comprehensive Arch Wiki.", pros: ["You control every aspect of your system", "Always has the latest software (rolling release)", "The Arch User Repository (AUR) is incredible", "You learn a ton about Linux"], cons: ["Installation is complex and manual", "You are responsible for system maintenance", "Can break if you're not careful"], scores: { experience: 'advanced', useCase: 'development', desktop: 'custom', updates: 'rolling', philosophy: 'any', hardware: 'any' } }, 'manjaro': { name: "Manjaro", tagline: "The friendly face of Arch Linux.", description: "Manjaro takes the power and cutting-edge software of Arch Linux and wraps it in a user-friendly package. You get a simple graphical installer, pre-configured desktop environment, and tools to make managing drivers easy.", pros: ["Access to Arch's software (AUR)", "Much easier installation than Arch", "Good hardware detection", "Rolling release, but with some testing"], cons: ["Can sometimes be less stable than fixed-release distros", "Not 'pure' Arch, which annoys Arch users"], scores: { experience: 'intermediate', useCase: 'gaming', desktop: 'custom', updates: 'rolling', philosophy: 'pragmatic', hardware: 'mid' } }, 'debian': { name: "Debian", tagline: "The rock-solid foundation of the Linux world.", description: "Debian is one of the oldest and most influential Linux distributions. It prioritizes stability and free software above all else, making it a favorite for servers and users who want a system that just works.", pros: ["Incredibly stable and reliable", "Huge software repositories", "Strong commitment to free and open source software", "Supports a vast range of hardware architectures"], cons: ["Software can be quite outdated", "Installation isn't the most user-friendly", "Requires more manual configuration"], scores: { experience: 'intermediate', useCase: 'server', desktop: 'minimal', updates: 'stable', philosophy: 'foss', hardware: 'any' } }, 'nobara': { name: "Nobara Project", tagline: "Fedora, but optimized for clicking 'Play'.", description: "Nobara is a modified version of Fedora with a strong focus on making gaming and streaming Just Work™. It includes many patches, drivers, and software packages out-of-the-box that gamers would normally have to install manually.", pros: ["Pre-loaded with gaming essentials (Lutris, Steam, Wine)", "Kernel patches for performance and compatibility", "Automatic driver installation", "Fixes many of Fedora's user-friendliness quirks"], cons: ["It's a third-party project, not officially Fedora", "Moves fast and can have occasional bugs"], scores: { experience: 'intermediate', useCase: 'gaming', desktop: 'custom', updates: 'rolling', philosophy: 'pragmatic', hardware: 'high' } }, 'garuda': { name: "Garuda Linux", tagline: "Performance and neon dragons. What's not to love?", description: "Garuda is another Arch-based distro that focuses on performance and aesthetics. It comes with a flashy, neon-heavy theme, uses the performance-oriented Zen kernel, and includes many tools to make system maintenance easy.", pros: ["Visually stunning out of the box", "Performance-tuned kernel and settings", "Includes helpful system utilities", "Uses BTRFS snapshots for easy rollbacks"], cons: ["The flashy look isn't for everyone", "Can be resource-heavy for an Arch-based distro", "Rolling release risks apply"], scores: { experience: 'intermediate', useCase: 'gaming', desktop: 'custom', updates: 'rolling', philosophy: 'pragmatic', hardware: 'high' } }, 'zorin': { name: "Zorin OS", tagline: "The polished and professional Windows alternative.", description: "Zorin OS is designed to be the ultimate replacement for Windows or macOS. It features a beautiful, highly polished interface with layouts that can mimic other operating systems, and it includes tools to run many Windows applications.", pros: ["Extremely familiar for Windows/macOS users", "Beautiful and intuitive design", "Includes compatibility layer for Windows apps", "Pro version offers great value and support"], cons: ["Free 'Core' version is great, but some features are paid", "Based on Ubuntu, so not cutting-edge"], scores: { experience: 'beginner', useCase: 'daily', desktop: 'windows', updates: 'stable', philosophy: 'pragmatic', hardware: 'mid' } }, 'lubuntu': { name: "Lubuntu", tagline: "Breathe new life into that old laptop.", description: "Lubuntu is an official 'flavor' of Ubuntu that uses the lightweight LXQt desktop environment. It's designed to be fast, energy-efficient, and work well on older computers with limited resources.", pros: ["Extremely lightweight and fast", "Perfect for old or low-spec hardware", "Access to all of Ubuntu's software", "Simple, no-frills user interface"], cons: ["Lacks the polish and advanced features of heavier distros", "The default app selection is very basic"], scores: { experience: 'any', useCase: 'daily', desktop: 'minimal', updates: 'stable', philosophy: 'any', hardware: 'low' } } };
+
+            let currentQuestionIndex = 0;
+            let userAnswers = {};
+
+            startBtn.addEventListener('click', startQuiz);
+            restartBtn.addEventListener('click', restartQuiz);
+
+            function startQuiz() {
+                startScreen.classList.add('hidden');
+                resultsScreen.classList.add('hidden');
+                quizScreen.classList.remove('hidden');
+                quizScreen.classList.add('fade-in');
+                currentQuestionIndex = 0;
+                userAnswers = {};
+                displayQuestion();
+            }
+
+            function displayQuestion() {
+                const question = quizData[currentQuestionIndex];
+                questionTitle.textContent = question.question;
+
+                questionSubtitle.textContent = question.subtitle;
+                answerGrid.innerHTML = '';
+
+                question.answers.forEach(answer => {
+                    const card = document.createElement('div');
+                    card.className = 'choice-card glass-panel rounded-lg p-4 cursor-pointer border-2 border-transparent';
+
+                    card.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="text-3xl mr-4">${answer.icon}</span>
+                            <div>
+                                <h4 class="font-bold text-lg">${answer.text}</h4>
+                                <p class="text-sm text-purple-200">${answer.description}</p>
+                            </div>
+                        </div>
+                    `;
+                    card.addEventListener('click', () => selectAnswer(question.key, answer.value));
+                    answerGrid.appendChild(card);
+                });
+
+                updateProgressBar();
+            }
+
+
+            function selectAnswer(key, value) {
+                userAnswers[key] = value;
+
+                quizContent.classList.remove('fade-in');
+
+                setTimeout(() => {
+                    if (currentQuestionIndex < quizData.length - 1) {
+                        currentQuestionIndex++;
+                        displayQuestion();
+                        quizContent.classList.add('fade-in');
+                    } else {
+                        calculateResults();
+                    }
+                }, 300);
+            }
+
+            function updateProgressBar() {
+                const progress = ((currentQuestionIndex) / quizData.length) * 100;
+                progressBar.style.width = `${progress}%`;
+            }
+
+            function calculateResults() {
+                progressBar.style.width = `100%`;
+                let scores = {};
+
+                Object.keys(distros).forEach(distroKey => {
+                    scores[distroKey] = 0;
+                    const distro = distros[distroKey];
+
+                    if (userAnswers.experience === distro.scores.experience || distro.scores.experience === 'any' || userAnswers.experience === 'any') {
+                        scores[distroKey] += 2;
+                    }
+
+                    if (userAnswers.useCase === distro.scores.useCase || distro.scores.useCase === 'any') {
+                        scores[distroKey] += 3;
+                    }
+                    if (userAnswers.desktop === distro.scores.desktop || distro.scores.desktop === 'any') {
+                        scores[distroKey] += 2;
+                    }
+                    if (userAnswers.updates === distro.scores.updates || distro.scores.updates === 'any') {
+                        scores[distroKey] += 1;
+                    }
+                    if (userAnswers.philosophy === distro.scores.philosophy || distro.scores.philosophy === 'any') {
+                        scores[distroKey] += 1;
+                    }
+                    if (userAnswers.hardware === 'low' && distro.scores.hardware === 'low') {
+                        scores[distroKey] += 5;
+                    } else if (userAnswers.hardware !== 'low' && distro.scores.hardware !== 'low') {
+                        scores[distroKey] += 1;
+                    }
+                });
+                const bestMatch = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+                displayResults(distros[bestMatch]);
+            }
+
+            function displayResults(distro) {
+                quizScreen.classList.add('hidden');
+                resultsScreen.classList.remove('hidden');
+                resultsScreen.classList.add('fade-in');
+
+                document.getElementById('distro-name').textContent = distro.name;
+                document.getElementById('distro-tagline').textContent = distro.tagline;
+                document.getElementById('distro-description').textContent = distro.description;
+
+                const prosList = document.getElementById('distro-pros');
+                prosList.innerHTML = '';
+                distro.pros.forEach(pro => {
+                    const li = document.createElement('li');
+                    li.textContent = pro;
+                    prosList.appendChild(li);
+                });
+                const consList = document.getElementById('distro-cons');
+                consList.innerHTML = '';
+                distro.cons.forEach(con => {
+                    const li = document.createElement('li');
+                    li.textContent = con;
+                    consList.appendChild(li);
+                });
+            }
+
+            function restartQuiz() {
+                resultsScreen.classList.add('hidden');
+                startScreen.classList.remove('hidden');
+                startScreen.classList.add('fade-in');
+            }
+
+            let i = 0;
+            function typeTagline() {
+                const text = "Unlock your ideal OS. No jargon, just answers.";
+                if (i < text.length) {
+                    taglineEl.innerHTML = text.substring(0, i + 1) + '<span class="typing-cursor">&nbsp;</span>';
+                    i++;
+                    setTimeout(typeTagline, 50);
+                } else {
+                    const cursor = taglineEl.querySelector('.typing-cursor');
+                    if (cursor) {
+                         setTimeout(() => {
+                            if (taglineEl.contains(cursor)) {
+                                taglineEl.removeChild(cursor);
+                                taglineEl.textContent = text;
+                            }
+                         }, 2000);
+                    }
+                }
+            }
+
+            setTimeout(typeTagline, 500);
+            
+        });
+    </script>
+</body>
+</html>
