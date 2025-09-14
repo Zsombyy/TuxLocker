@@ -1,6 +1,18 @@
-# TuxLocker
-TuxLocker - selfhosted and open source Linux Distribution recommender
-Free to modify change without any permission, you can add new features if you want to 
+# TuxLocker  
 
-If you modify the project make a pull request to support the project with your new features
+[![TuxLocker](https://hackatime-badge.hackclub.com/U092FCQPD8Q/TuxLocker)](https://hackatime-badge.hackclub.com/U092FCQPD8Q/TuxLocker)  
 
+**TuxLocker** is a self-hosted and open-source Linux distribution recommender.  
+
+- Free to modify and change without permission.  
+- You can add new features if you want to.  
+
+---
+
+### 🤝 Contributing  
+If you improve the project, please open a pull request so your features can be added and shared with the community.  
+
+---
+
+### 📌 Note  
+This project was created for the **HackClub Siege** event.  
