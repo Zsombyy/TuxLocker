@@ -243,29 +243,29 @@
                     scores[distroKey] = 0;
                     const distro = distros[distroKey];
 
-                    // Experience matching with special handling for expert level
+                  
                     if (userAnswers.experience === 'expert') {
                         if (distro.scores.experience === 'expert') {
-                            scores[distroKey] += 5; // Strong bonus for LFS
+                            scores[distroKey] += 5; 
                         } else if (distro.scores.experience === 'advanced') {
-                            scores[distroKey] += 2; // Some credit for advanced distros
+                            scores[distroKey] += 2; 
                         }
                     } else if (userAnswers.experience === distro.scores.experience || distro.scores.experience === 'any' || userAnswers.experience === 'any') {
                         scores[distroKey] += 2;
                     }
 
-                    // Use case matching with special handling for learning
+             
                     if (userAnswers.useCase === 'learning') {
                         if (distro.scores.useCase === 'learning') {
-                            scores[distroKey] += 5; // Strong bonus for LFS
+                            scores[distroKey] += 5; 
                         } else if (distro.scores.useCase === 'development') {
-                            scores[distroKey] += 1; // Some credit for dev-focused distros
+                            scores[distroKey] += 1; 
                         }
                     } else if (userAnswers.useCase === distro.scores.useCase || distro.scores.useCase === 'any') {
                         scores[distroKey] += 3;
                     }
 
-                    // Desktop matching with CLI special case
+                    
                     if (userAnswers.desktop === 'cli') {
                         if (distro.scores.desktop === 'cli') {
                             scores[distroKey] += 3;
@@ -276,10 +276,9 @@
                         scores[distroKey] += 2;
                     }
 
-                    // Philosophy matching with reproducible special case
                     if (userAnswers.philosophy === 'reproducible') {
                         if (distro.scores.philosophy === 'reproducible') {
-                            scores[distroKey] += 4; // Strong bonus for NixOS
+                            scores[distroKey] += 4;
                         }
                     } else if (userAnswers.philosophy === distro.scores.philosophy || distro.scores.philosophy === 'any') {
                         scores[distroKey] += 1;
