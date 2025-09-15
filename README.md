@@ -17,7 +17,7 @@ If you improve the project, please open a pull request so your features can be a
 ### Authors 🫶
 
 - [@Zsombyy](https://www.github.com/Zsombyy) Maintainer
-- [@RedglitchProject](https://www.github.com/Zsombyy) Contributor (Ditrobution list)
+- [@RedglitchProject](https://www.github.com/Zsombyy) Contributor (Distribution list)
 
 
 ---
